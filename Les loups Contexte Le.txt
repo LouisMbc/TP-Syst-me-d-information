@@ -1,0 +1,282 @@
+	Les loups
+Contexte
+Le projet vous met dans la peau d’une équipe de développement qui
+a pour mission la réalisation d’un jeu massivement multijoueur ayant
+une excellente tolérance à la panne.
+Lors de la demande de participation au jeu, selon un tirage au sort, le
+jeu attribue le rôle loup ou villageois au nouveau joueur dans la limite
+des quotas.
+Le villageois a pour obectif de rester en vie jusqu’à la fin du temps
+imparti.
+Le loup a pour objectif d’éliminer du jeu tous les villageois.
+Le jeu fonctionne en tour par tour avec une limite de temps sur le
+choix de l’action à effectuer à chaque tour. La seule action que
+n’importte quel joueur peut réaliser est un déplacement. Une fois le
+temps d’attente du tour terminé, le moteur du jeu doit résoudre les
+demandes de déplacement et résoudre les éventuelles éliminations
+de villageois.
+Pour être éliminé, le villageois doit être sur la même case qu’un loup
+à la fin d’un tour.
+
+Déplacements
+L’aire de jeu est un plateau de jeu en 2 dimensions découpé en cellules
+au croisement d’une ligne et d’une colonne. Le nombre de cellules,
+c’est à dire le nombre de combinaisons de lignes et de colonnes, doit
+être personnalisable au début de la partie.
+Une cellule peut contenir :
+• rien
+• un villageois
+• un loup
+• un obstacle
+Les loups et les villageois se déplacent uniquement en lignes ou
+en colonnes. Le déplacement en diagonale n’est pas possible. Un
+obstacle ne peut pas être déplacé. Un loup ou un villageois ne peut
+pas aller sur une case possédant un obstacle. Si la demande de
+déplacement est invalide, alors le tour est perdu pour le joueur. Le
+joueur peut également passer son tour en n’envoyant aucun ordre
+durant le tour ou bien en spécifiant qu’il passe son tour.
+
+Service d’administration
+Pour initialiser une partie et définir les paramètres d’un jeu, un service
+d’administration doit être fourni. Les paramètres suivants doivent être
+fournis pour la création d’une nouvelle partie :
+• nombre de lignes
+• nombre de colonnes
+• temps d’attente maximal pour un tour
+• nombre de tours
+• nombre d’obstacles
+• nombre maximum de joueurs
+
+
+Version Locale :
+Pour démarrer le développement et fournir une première version utilis-
+able, vous devez implémenter des règles simples dans le cadre d’une
+version solo destinée à appréhender les règles de fonctionnement des
+2 rôles principaux.
+Dans la version solo, le joueur teste le jeu seul et choisit donc le rôle
+qu’il souhaite avoir. Pour tester correctement le jeu, le rôle complé-
+mentaire au rôle choisi par le joueur est attribué à un personnage
+non joueur qui ne peut pas se déplacer mais conserve ses autres
+propriétés. Si le joueur avec le rôle loup se retrouve sur la case d’un
+personnage non joueur villageois, alors il élimine le villageois et gagne
+donc la partie. Si le joueur avec le rôle villageois se déplace sur la
+case du personnage non joueur loup-garou, alors le joueur avec le rôle
+villageois a perdu.
+Dans ce mode de jeu, il ne peut y avoir donc qu’un loup et un villageois.
+Le seul capable de se déplacer est le personnage incarné par le joueur.
+
+Version En ligne: Multijoueur
+En version multijoueur, chaque joueur souhaitant rejoindre la partie
+doit fournir un identifiant unique. Si l’identifiant est déjà utilisé, alors
+vous devez considérer que c’est le même joueur qui tente d’effectuer
+une nouvelle action. Si cette action est la tentative de rejoindre une
+partie, alors elle sera refusée car le joueur est déjà inscrit.
+Lorsqu’un tour est terminé, le serveur doit envoyer l’information
+aux différents clients qu’un nouveau tour commence. Pour
+l’implémentation de cette fonctionnalité, vous pouvez utiliser soit la
+méthode pull ou alors la méthode push.
+
+
+Barème
+Les critères d’évaluation de votre solution porteront sur les différents
+points présents dans les tableaux ci-après.
+Gestion (/20)
+Critère Points Catégorie
+Respect organisation Repo GIT 5 Gestion
+Historique du repo GIT 5 Gestion
+Identification des tâches 5 Gestion
+Partage des tâches 5 Gestion
+La quantité de modifications réalisées par chacun des membres du
+groupe doit être équilibrée.
+Il vous est donc demandé d’identifier, sur la base du barème présenté,
+l’esemble des tâches à réaliser et de les affecter à chacun le plus tôt
+possible.
+Implémentation serveur (/20)
+Critère Points Catégorie
+Module Administration 5 Implémentation Serveur
+Module Serveur HTTP 5 Implémentation Serveur
+Module Serveur TCP 5 Implémentation Serveur
+Module Moteur de jeu 5 Implémentation Serveur
+Implémentation client (/20)
+Critère Points Catégorie
+Module Client TCP 5 Implémentation Client
+Module Notification Client TCP 5 Implémentation Client
+Module Client HTTP 5 Implémentation Client
+Module Notification Client HTTP 5 Implémentation Client
+Implémentation BDD (/20)
+Critère Points Catégorie
+Gestion des index wv_index.sql 4 Implémentation BDD
+Script wv_views.sql 4 Implémentation BDD
+Script wv_funcs.sql 4 Implémentation BDD
+Script wv_procs.sql 3 Implémentation BDD
+Script wv_triggers.sql 2 Implémentation BDD
+Utilisation ORM 3 Implémentation BDD
+
+Communications et interopérabilité (/20)
+Critère Points Catégorie
+Communication gRPC
+entre Serveur HTTP
+et Moteur Jeu
+3 Implémentation
+Comm
+Communication gRPC
+entre Serveur TCP et
+Moteur Jeu
+3 Implémentation
+Comm
+Communication TCP
+entre Serveur HTTP
+et Administration
+3 Implémentation
+Comm
+Communication TCP
+entre Serveur TCP et
+Administration
+3 Implémentation
+Comm
+Compatible avec les
+clients des autres
+groupes
+5 Interopérabilité
+Définition d’un
+protocole de
+communication
+commun entre clients
+et serveurs
+3 Interopérabilité
+Fonctionnalités (/20)
+Critère Points Catégorie
+Mode local 10 Fonctionnalités
+Mode en ligne 10 Fonctionnalités
+
+Contraintes
+Solution technique
+Dans votre solution technique, il doit y avoir au moins une base de
+données, gérée par le SGBD PostgreSQL.
+Pour l’affichage des pages web, vous devez utiliser Flask, le framework
+d’application Web Python.
+Pour l’interface avec la base de données, vous devez utiliser l’ORM
+SQLAlchemy.
+Sécurité
+Ne vous préoccupez pas pour le moment de l’aspect sécurité. Nous
+l’implémenterons plus tard. Cela signifie qu’il n’est pas nécessaire
+d’implémenter un mécanisme d’authentification.
+
+Définition de l’interface client TCP / serveur TCP
+Donnée au format JSON.
+Lister les parties ouvertes non commencées
+Requête
+{
+"action": "list",
+"parameters": []
+}
+Réponse
+{
+"status": ("OK"|"KO"),
+"response": {
+"id_parties": [
+1, 2, 3
+]
+}
+}
+S’inscrire à une partie
+Requête
+{
+"action": "subscribe",
+"parameters": [
+{
+"player": "{player}",
+"id_party": "{id_party}"
+},
+]
+}
+Réponse
+{
+"status": ("OK"|"KO"),
+"response": {
+"role": ("wolf"|"villager"),
+"id_player": 23
+}
+}
+
+
+
+
+Récupérer l’état du tour
+Requête
+{
+"action": "party_status",
+"parameters": [
+{"id_player": 23},
+{"id_party": 23},
+]
+}
+Réponse
+{
+"status": ("OK"|"KO"),
+"response": {
+"party": {
+"id_party": 23,
+"id_player": 12,
+"started": (true|false),
+"round_in_progress": (12|-1),
+"move": {
+"next_position": {
+"row": (-1|0|1),
+"col": (-1|0|1)
+}
+}
+}
+}
+}
+Récupérer l’état du plateau
+Requête
+{
+"action": "gameboard_status",
+"parameters": [
+{"id_party": 23},
+{"id_player": 12},
+]
+}
+Réponse
+{
+"status": ("OK"|"KO"),
+"response": {
+
+
+
+"visible_cells": "010010000"
+},
+}
+Interprétation des codes renvoyés dans visible_cells :
+• 0 : rien
+• 1 : un villageois
+• 2 : un loup
+• 3 : un obstacle
+Réaliser une action
+Requête
+{
+"action": "move",
+"parameters": [
+{"id_party": 23},
+{"id_player": 12},
+{"move": "01"}
+]
+}
+La valeur envoyée dans le paramètre move correspond au vecteur de
+déplacement. Le plateau de jeu étant dans un plan (2 dimensions), le
+1er chiffre correspond au décalage sur les lignes et le second sur les
+colonnes.
+Réponse
+{
+"status": ("OK"|"KO"),
+"response": {
+"round_in_progress": (12|-1),
+"move": {
+"next_position": {
+"row": (-1|0|1),
+"col": (-1|0|1)
+}
+}
+}
+}
