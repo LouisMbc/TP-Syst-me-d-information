@@ -31,34 +31,43 @@ def draw_plateau(canvas, plateau, joueurs):
                 # Si aucun joueur n'est présent, dessine une case vide
                 if not joueur_present:
                     canvas.create_rectangle(x0, y0, x1, y1, fill="white", outline="black")
+    
 
 
 
 
 
 def joueur_haut(canvas, plateau, joueurs):
-    joueur = joueurs[1]
+    for villageoi in joueurs:
+        if villageoi.get_role() == "villageois":
+            joueur = villageoi
     if joueur.get_co_y() > 0 and (joueur.get_co_x(), joueur.get_co_y() - 1) not in plateau.get_pos_obstacles():
         joueur.set_co_y(joueur.get_co_y() - 1)
         print("haut")
     draw_plateau(canvas, plateau, joueurs)
 
 def joueur_bas(canvas, plateau, joueurs):
-    joueur = joueurs[1]
+    for villageoi in joueurs:
+        if villageoi.get_role() == "villageois":
+            joueur = villageoi
     if joueur.get_co_y() < plateau.get_nb_lignes() - 1 and (joueur.get_co_x(), joueur.get_co_y() + 1) not in plateau.get_pos_obstacles():
         joueur.set_co_y(joueur.get_co_y() + 1)
         print("bas")
     draw_plateau(canvas, plateau, joueurs)
 
 def joueur_droite(canvas, plateau, joueurs):
-    joueur = joueurs[1]
+    for villageoi in joueurs:
+        if villageoi.get_role() == "villageois":
+            joueur = villageoi
     if joueur.get_co_x() < plateau.get_nb_colonnes() - 1 and (joueur.get_co_x()+1, joueur.get_co_y()) not in plateau.get_pos_obstacles():
         joueur.set_co_x(joueur.get_co_x() + 1)
         print("droite")
     draw_plateau(canvas, plateau, joueurs)
 
 def joueur_gauche(canvas, plateau, joueurs):
-    joueur = joueurs[1]
+    for villageoi in joueurs:
+        if villageoi.get_role() == "villageois":
+            joueur = villageoi
     if joueur.get_co_x() > 0 and (joueur.get_co_x()-1, joueur.get_co_y()) not in plateau.get_pos_obstacles():
         joueur.set_co_x(joueur.get_co_x() - 1)
         print("gauche")
@@ -70,6 +79,7 @@ def joueur_gauche(canvas, plateau, joueurs):
 
 
 def nouveau_jeu(taille_x, taille_y, nb_obstacle, nb_joueurs, nb_loup):
+    print()
     print("----nouveau jeu----")
     plateau = Plateau(taille_x, taille_y, nb_obstacle)
     print(plateau)
@@ -84,8 +94,10 @@ def nouveau_jeu(taille_x, taille_y, nb_obstacle, nb_joueurs, nb_loup):
             joueurs.append(Joueur(i, "loup", x, y, "OK", 0))
         else:
             joueurs.append(Joueur(i, "villageois", x, y, "OK", 0))
+        print()
+        print("---------------")
         joueurs[i].info_joueur()
-    print(len(joueurs))
+    
 
     return plateau, joueurs
 
@@ -104,16 +116,16 @@ def main():
     canvas = tk.Canvas(fenetre, width=plateau.get_nb_colonnes() * 40, height=plateau.get_nb_lignes() * 40)
     canvas.pack()
 
-    button_haut = Button(text="haut",command = lambda : joueur_haut(canvas, plateau, joueurs[-1]))
+    button_haut = Button(text="haut",command = lambda : joueur_haut(canvas, plateau, joueurs))
     button_haut.place(x=670, y=400, width=160, height=50)
 
-    button_bas = Button(text="bas",command = lambda : joueur_bas(canvas, plateau, joueurs[-1]))
+    button_bas = Button(text="bas",command = lambda : joueur_bas(canvas, plateau, joueurs))
     button_bas.place(x=670, y=450, width=160, height=50)
 
-    button_droite = Button(text="droite",command = lambda : joueur_droite(canvas, plateau, joueurs[-1]))
+    button_droite = Button(text="droite",command = lambda : joueur_droite(canvas, plateau, joueurs))
     button_droite.place(x=670, y=500, width=160, height=50)
 
-    button_gauche = Button(text="gauche",command = lambda : joueur_gauche(canvas, plateau, joueurs[-1]))
+    button_gauche = Button(text="gauche",command = lambda : joueur_gauche(canvas, plateau, joueurs))
     button_gauche.place(x=670, y=550, width=160, height=50)
 
     draw_plateau(canvas, plateau, joueurs)
