@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS ACHETER,CLIENT,EDITEUR,JEU_DE_SOCIETE,TYPE_JEU;
+DROP TABLE IF EXISTS parties,roles,players,players_in_parties,players_play,turns;
 
 create table parties (
     id_party int,
