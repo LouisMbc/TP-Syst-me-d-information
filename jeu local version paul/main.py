@@ -26,7 +26,7 @@ def draw_plateau(canvas, plateau, joueurs):
                         break
                 if not joueur_present:
                     canvas.create_rectangle(x0, y0, x1, y1, fill="white", outline="black")
-    
+    check_victoire(joueurs)
 
 
 
@@ -36,7 +36,7 @@ def joueur_haut(canvas, plateau, joueurs):
     for villageoi in joueurs:
         if villageoi.get_role() == "villageois":
             joueur = villageoi
-    if joueur.get_co_y() > 0 and (joueur.get_co_x(), joueur.get_co_y() - 1) not in plateau.get_pos_obstacles():
+    if joueur.get_co_y() > 0 and (joueur.get_co_x(), joueur.get_co_y() - 1) not in plateau.get_pos_obstacles() and joueur.get_etat() == "OK":
         joueur.set_co_y(joueur.get_co_y() - 1)
         print("haut")
     draw_plateau(canvas, plateau, joueurs)
@@ -45,7 +45,7 @@ def joueur_bas(canvas, plateau, joueurs):
     for villageoi in joueurs:
         if villageoi.get_role() == "villageois":
             joueur = villageoi
-    if joueur.get_co_y() < plateau.get_nb_lignes() - 1 and (joueur.get_co_x(), joueur.get_co_y() + 1) not in plateau.get_pos_obstacles():
+    if joueur.get_co_y() < plateau.get_nb_lignes() - 1 and (joueur.get_co_x(), joueur.get_co_y() + 1) not in plateau.get_pos_obstacles() and joueur.get_etat() == "OK":
         joueur.set_co_y(joueur.get_co_y() + 1)
         print("bas")
     draw_plateau(canvas, plateau, joueurs)
@@ -54,7 +54,7 @@ def joueur_droite(canvas, plateau, joueurs):
     for villageoi in joueurs:
         if villageoi.get_role() == "villageois":
             joueur = villageoi
-    if joueur.get_co_x() < plateau.get_nb_colonnes() - 1 and (joueur.get_co_x()+1, joueur.get_co_y()) not in plateau.get_pos_obstacles():
+    if joueur.get_co_x() < plateau.get_nb_colonnes() - 1 and (joueur.get_co_x()+1, joueur.get_co_y()) not in plateau.get_pos_obstacles() and joueur.get_etat() == "OK":
         joueur.set_co_x(joueur.get_co_x() + 1)
         print("droite")
     draw_plateau(canvas, plateau, joueurs)
@@ -63,12 +63,25 @@ def joueur_gauche(canvas, plateau, joueurs):
     for villageoi in joueurs:
         if villageoi.get_role() == "villageois":
             joueur = villageoi
-    if joueur.get_co_x() > 0 and (joueur.get_co_x()-1, joueur.get_co_y()) not in plateau.get_pos_obstacles():
+    if joueur.get_co_x() > 0 and (joueur.get_co_x()-1, joueur.get_co_y()) not in plateau.get_pos_obstacles() and joueur.get_etat() == "OK":
         joueur.set_co_x(joueur.get_co_x() - 1)
         print("gauche")
     draw_plateau(canvas, plateau, joueurs)
 
 
+def check_victoire(joueurs):
+    villageois = []
+    loups = []
+    for joueur in joueurs:
+        if joueur.get_role() == "villageois":
+            villageois.append(joueur)
+        elif joueur.get_role() == "loup":
+            loups.append(joueur)
+    for loup in loups:
+        for villageoi in villageois:
+            if loup.get_co_x() == villageoi.get_co_x() and loup.get_co_y() == villageoi.get_co_y():
+                villageoi.set_etat("KO")
+                print("villageois KO")
 
 
 
