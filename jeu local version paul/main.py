@@ -12,12 +12,9 @@ def draw_plateau(canvas, plateau, joueurs):
         for j in range(plateau.get_nb_colonnes()):
             x0, y0 = j * cell_size, i * cell_size
             x1, y1 = x0 + cell_size, y0 + cell_size
-
-            # Vérifie si la position (j, i) est un obstacle
             if (j, i) in plateau.get_pos_obstacles():
                 canvas.create_rectangle(x0, y0, x1, y1, fill="red")
             else:
-                # Vérifie si un joueur est à la position (j, i)
                 joueur_present = False
                 for joueur in joueurs:
                     if joueur.get_co_x() == j and joueur.get_co_y() == i:
@@ -27,8 +24,6 @@ def draw_plateau(canvas, plateau, joueurs):
                         elif joueur.get_role() == "villageois":
                             canvas.create_rectangle(x0, y0, x1, y1, fill="blue")
                         break
-
-                # Si aucun joueur n'est présent, dessine une case vide
                 if not joueur_present:
                     canvas.create_rectangle(x0, y0, x1, y1, fill="white", outline="black")
     
