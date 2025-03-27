@@ -120,11 +120,13 @@ def nouveau_jeu(taille_x, taille_y, nb_obstacle, nb_joueurs, nb_loup):
 
 
 
-def main(taille_x, taille_y, nb_obstacle, nb_joueurs, nb_loup, first_game) :
-    plateau, joueurs = nouveau_jeu(taille_x, taille_y, nb_obstacle, nb_joueurs, nb_loup)
-    if (first_game == 1):
-        canvas = tk.Canvas(fenetre, width=plateau.get_nb_colonnes() * 40, height=plateau.get_nb_lignes() * 40+250) 
-        canvas.pack()
+def main() :
+    fenetre = tk.Tk()
+    fenetre.title("Plateau de Jeu")
+    plateau, joueurs = nouveau_jeu(10, 10, 5, 5, 1)
+
+    canvas = tk.Canvas(fenetre, width=plateau.get_nb_colonnes() * 40, height=plateau.get_nb_lignes() * 40+250) 
+    canvas.pack()
 
     button_haut = Button(text="haut",command = lambda : joueur_haut(canvas, plateau, joueurs))
     button_haut.place(x=-80+plateau.get_nb_colonnes() * 20, y=plateau.get_nb_lignes() * 40, width=160, height=50)
@@ -139,27 +141,9 @@ def main(taille_x, taille_y, nb_obstacle, nb_joueurs, nb_loup, first_game) :
     button_gauche.place(x=-160+plateau.get_nb_colonnes() * 20, y=plateau.get_nb_lignes() * 40+50, width=160, height=50)
 
 
-    button_new_game = Button(text="New game",command = lambda : main(10, 10, 5, 3, 1, 0))
-    button_new_game.place(x=-200+plateau.get_nb_colonnes() * 20, y=plateau.get_nb_lignes() * 40+200, width=160, height=50)
-
-    spinbox_colonne = tk.Spinbox(fenetre, from_=2, to=15)
-    spinbox_colonne.place(x=-40+plateau.get_nb_colonnes() * 20, y=plateau.get_nb_lignes() * 40+230, width=40, height=20)
-    spinbox_ligne = tk.Spinbox(fenetre, from_=2, to=15)
-    spinbox_ligne.place(x=plateau.get_nb_colonnes() * 20, y=plateau.get_nb_lignes() * 40+230, width=40, height=20)
-    spinbox_obstacle = tk.Spinbox(fenetre, from_=0, to=75)
-    spinbox_obstacle.place(x=40+plateau.get_nb_colonnes() * 20, y=plateau.get_nb_lignes() * 40+230, width=40, height=20)
-    spinbox_joueurs = tk.Spinbox(fenetre, from_=2, to=20)
-    spinbox_joueurs.place(x=80+plateau.get_nb_colonnes() * 20, y=plateau.get_nb_lignes() * 40+230, width=40, height=20)
-    spinbox_loup = tk.Spinbox(fenetre, from_=1, to=19)
-    spinbox_loup.place(x=120+plateau.get_nb_colonnes() * 20, y=plateau.get_nb_lignes() * 40+230, width=40, height=20)
-
-
     draw_plateau(canvas, plateau, joueurs)
 
+    fenetre.mainloop()
 
-
-fenetre = tk.Tk()
-fenetre.title("Plateau de Jeu")
-
-main(10, 10, 5, 3, 1, 1)
-fenetre.mainloop()
+if __name__ == "__main__":
+    main()
