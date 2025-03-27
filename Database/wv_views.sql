@@ -1,3 +1,4 @@
+
 CREATE VIEW v_players AS 
 SELECT id_player, pseudo FROM players;
 

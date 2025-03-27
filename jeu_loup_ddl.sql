@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS parties,roles,players,players_in_parties,players_play,turns,settings_parties;
-
 create table settings_parties(
     id_settings SERIAL PRIMARY KEY ,
     nbr_ligne int,

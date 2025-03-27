@@ -1,14 +1,14 @@
 -- Fonction pour attribuer une position aléatoire qui n'a jamais été utilisée dans une partie
-CREATE FUNCTION random_position(party_id INT) RETURNS TABLE(col TEXT, "row" TEXT) AS $$
+CREATE OR REPLACE FUNCTION random_position() 
+RETURNS TABLE(col TEXT, ligne TEXT) AS $$  
 BEGIN
     RETURN QUERY 
-    SELECT LEFT(md5(random()::TEXT), 2), LEFT(md5(random()::TEXT), 2)
-    WHERE NOT EXISTS (
-        SELECT 1 FROM players_play WHERE id_party = party_id 
-        AND origin_position_col = col AND origin_position_row = "row"
-    ) LIMIT 1;
+    SELECT 
+        LPAD(TRUNC(random() * 10)::TEXT, 2, '0') AS col,  
+        LPAD(TRUNC(random() * 10)::TEXT, 2, '0') AS ligne;  
 END;
 $$ LANGUAGE plpgsql;
+
 
 -- Fonction pour attribuer un rôle aléatoire en respectant les quotas
 CREATE FUNCTION random_role(party_id INT) RETURNS INT AS $$
@@ -41,5 +41,25 @@ BEGIN
     JOIN roles r ON pip.id_role = r.id_role
     WHERE pip.id_party = party_id AND pip.is_alive = 'yes'
     LIMIT 1;
+END;
+$$ LANGUAGE plpgsql;
+
+
+drop function func_username_to_lower;
+create or replace function func_username_to_lower() returns trigger AS $$
+BEGIN
+    call username_to_lower();
+    return NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION complete_tour() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Ici, ajoute la logique de fin de tour en utilisant NEW.id_turn et NEW.id_party
+    PERFORM some_action(NEW.id_turn, NEW.id_party);  
+
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
