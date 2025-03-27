@@ -1,12 +1,6 @@
-[submodule "TcpServeur"]
-	path = TcpServeur
-	url = https://github.com/LouisMbc/TcpServeur.git
 [submodule "TcpClient"]
 	path = TcpClient
 	url = https://github.com/LouisMbc/TcpClient.git
-[submodule "TcpServer"]
-	path = TcpServer
-	url = https://github.com/kategaia/TcpServer.git
 [submodule "TcpServer2"]
 	path = TcpServer2
 	url = https://github.com/kategaia/TcpServer.git
