@@ -4,3 +4,6 @@
 [submodule "TcpClient"]
 	path = TcpClient
 	url = https://github.com/LouisMbc/TcpClient.git
+[submodule "TcpServer"]
+	path = TcpServer
+	url = https://github.com/kategaia/TcpServer.git
