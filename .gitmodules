@@ -7,3 +7,6 @@
 [submodule "TcpServer"]
 	path = TcpServer
 	url = https://github.com/kategaia/TcpServer.git
+[submodule "TcpServer2"]
+	path = TcpServer2
+	url = https://github.com/kategaia/TcpServer.git
