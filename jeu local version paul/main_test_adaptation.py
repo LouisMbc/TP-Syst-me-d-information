@@ -36,6 +36,84 @@ def draw_plateau(canvas, plateau, joueurs):
 
 
 
+
+
+
+
+
+
+def get_vision():
+    pass
+
+
+
+def draw_vision_joueur(canvas, vision):
+    cell_size = 40
+    j = 0
+    for i in range(len(vision)): 
+        if i % 3 == 0 and i != 0:
+            j+=1
+        y0, x0 = j * cell_size, (i-j*3) * cell_size
+        x1, y1 = x0 + cell_size, y0 + cell_size
+        if vision[i] == "0":
+            canvas.create_rectangle(x0, y0, x1, y1, fill="white", outline="black", tags="shape")
+        elif vision[i] == "1":
+            canvas.create_rectangle(x0, y0, x1, y1, fill="blue", tags="shape")
+        elif vision[i] == "2":
+            canvas.create_rectangle(x0, y0, x1, y1, fill="black", tags="shape")
+        else:
+            canvas.create_rectangle(x0, y0, x1, y1, fill="red", tags="shape")
+
+
+
+
+
+
+
+
+
+
+
+
+
+def move_joueur(joueurs, id_player, move):
+    if move =="10" :
+        for joueur in joueurs:
+            if joueur.get_id() == id_player:
+                joueur.set_co_x(joueur.get_co_x() + 1)
+                print("droite")
+    if move =="-10" :
+        for joueur in joueurs:
+            if joueur.get_id() == id_player:
+                joueur.set_co_x(joueur.get_co_x() - 1)
+                print("gauche")
+    if move =="01" :
+        for joueur in joueurs:
+            if joueur.get_id() == id_player:
+                joueur.set_co_y(joueur.get_co_y() + 1)
+                print("bas")
+    if move =="0-1" :
+        for joueur in joueurs:
+            if joueur.get_id() == id_player:
+                joueur.set_co_y(joueur.get_co_y() - 1)
+                print("haut")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def joueur_haut(canvas, plateau, joueurs):
     for villageoi in joueurs:
         if villageoi.get_role() == "villageois":
@@ -112,8 +190,9 @@ def nouveau_jeu(taille_x, taille_y, nb_obstacle, nb_joueurs, nb_loup):
             joueurs.append(Joueur(i, "villageois", x, y, "OK", 0))
         print()
         print("---------------")
-        # joueurs[i].info_joueur()
+        joueurs[i].info_joueur()
     
+
     return plateau, joueurs
 
 
@@ -140,7 +219,8 @@ def main() :
     button_gauche.place(x=-160+plateau.get_nb_colonnes() * 20, y=plateau.get_nb_lignes() * 40+50, width=160, height=50)
 
 
-    draw_plateau(canvas, plateau, joueurs)
+    #draw_plateau(canvas, plateau, joueurs)
+    draw_vision_joueur(canvas, "020010030")
 
     fenetre.mainloop()
 
