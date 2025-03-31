@@ -65,7 +65,7 @@ create table turns (
 
 create table players_play (
     id_player int,
-     FOREIGN KEY (id_player) REFERENCES players(id_player),
+    FOREIGN KEY (id_player) REFERENCES players(id_player),
     id_turn int,
     FOREIGN KEY (id_turn) REFERENCES turns(id_turn),
     start_time date,
