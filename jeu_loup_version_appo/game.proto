@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+service GameService {
+    rpc PartyStatus(Empty) returns (PartyStatusResponse);
+    rpc GameboardStatus(Empty) returns (GameboardStatusResponse);
+    rpc Move(MoveRequest) returns (MoveResponse);
+    rpc List(Empty) returns (ListResponse);
+    rpc Subscribe(SubscribeRequest) returns (SubscribeResponse);
+}
+
+message Empty {}
+
+message PartyStatusResponse {
+    string status = 1;
+    Party party = 2;
+}
+
+message Party {
+    int32 id_party = 1;
+    int32 id_player = 2;
+    bool started = 3;
+    int32 round_in_progress = 4;
+    Move next_move = 5;
+}
+
+message Move {
+    int32 row = 1;
+    int32 col = 2;
+}
+
+message GameboardStatusResponse {
+    string status = 1;
+    string visible_cells = 2;
+}
+
+message MoveRequest {
+    int32 row = 1;
+    int32 col = 2;
+}
+
+message MoveResponse {
+    string status = 1;
+    Move next_position = 2;
+}
+
+message ListResponse {
+    string status = 1;
+    repeated int32 id_parties = 2;
+}
+
+message SubscribeRequest {
+    int32 player_id = 1;
+    int32 party_id = 2;
+}
+
+message SubscribeResponse {
+    string status = 1;
+    string role = 2;
+    int32 id_player = 3;
+}
