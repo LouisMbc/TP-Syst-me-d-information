@@ -59,7 +59,6 @@ import tkinter as tk
 from tkinter import messagebox
 import socket
 import socketserver
-from threading import Thread
 import json
 
 class Client:
@@ -149,8 +148,5 @@ def wait_for_notification(client_port):
 
 if __name__ == "__main__":
     client_port = int(input('client port: '))
-    thread_notification = Thread(target=wait_for_notification, args=[client_port])
-    thread_notification.start()
     client = Client('localhost', client_port)
     client.run()
-    thread_notification.join()

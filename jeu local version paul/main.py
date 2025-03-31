@@ -112,9 +112,8 @@ def nouveau_jeu(taille_x, taille_y, nb_obstacle, nb_joueurs, nb_loup):
             joueurs.append(Joueur(i, "villageois", x, y, "OK", 0))
         print()
         print("---------------")
-        joueurs[i].info_joueur()
+        # joueurs[i].info_joueur()
     
-
     return plateau, joueurs
 
 
