@@ -4,8 +4,59 @@ from tkinter.messagebox import *
 from random import randint
 from Class_joueur import Joueur
 from Class_plateau import Plateau
+from flask import Flask, request, g
+import psycopg2
+
+def get_db():
+    if 'db' not in g:
+        g.db = psycopg2.connect(
+            dbname="jeu_loup",
+            user="postgres",
+            password="mysecretpassword",
+            host="10.1.4.227",
+            port="5434"
+        )
+    return g.db
+
+def get_pos_joueur(id_joueur):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT origin_position_col, origin_position_row FROM players_play wHERE id_player = {id_joueur}")
+    result = cursor.fetchone()
+    if result is None:
+        print("Aucun joueur trouvé avec cet ID.")
+        return None
+    print(f"Position du joueur {id_joueur} : {result}")
+    conn.commit()
+    cursor.close()
+    return result
+
+def test():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM players_play")
+    result = cursor.fetchall()
+    if result is None:
+        print("Aucun joueur trouvé.")
+        return None
+    conn.commit()
+    cursor.close()
+    return result
 
 
+def close_db(e=None):
+    db = g.pop('db', None)
+
+    if db is not None:
+        db.close()
+
+
+def build_vision(id_joueur):
+    vision = ""
+    pos_joueur = get_pos_joueur(id_joueur)
+    x, y = pos_joueur[0], pos_joueur[1]
+    for i in range(8):
+        pass
 
 
 def draw_plateau(canvas, plateau, joueurs):
@@ -42,11 +93,6 @@ def draw_plateau(canvas, plateau, joueurs):
 
 
 
-def get_vision():
-    pass
-
-
-
 def draw_vision_joueur(canvas, vision):
     cell_size = 40
     j = 0
@@ -63,43 +109,6 @@ def draw_vision_joueur(canvas, vision):
             canvas.create_rectangle(x0, y0, x1, y1, fill="black", tags="shape")
         else:
             canvas.create_rectangle(x0, y0, x1, y1, fill="red", tags="shape")
-
-
-
-
-
-
-
-
-
-
-
-
-
-def move_joueur(joueurs, id_player, move):
-    if move =="10" :
-        for joueur in joueurs:
-            if joueur.get_id() == id_player:
-                joueur.set_co_x(joueur.get_co_x() + 1)
-                print("droite")
-    if move =="-10" :
-        for joueur in joueurs:
-            if joueur.get_id() == id_player:
-                joueur.set_co_x(joueur.get_co_x() - 1)
-                print("gauche")
-    if move =="01" :
-        for joueur in joueurs:
-            if joueur.get_id() == id_player:
-                joueur.set_co_y(joueur.get_co_y() + 1)
-                print("bas")
-    if move =="0-1" :
-        for joueur in joueurs:
-            if joueur.get_id() == id_player:
-                joueur.set_co_y(joueur.get_co_y() - 1)
-                print("haut")
-
-
-
 
 
 
@@ -221,8 +230,11 @@ def main() :
 
     #draw_plateau(canvas, plateau, joueurs)
     draw_vision_joueur(canvas, "020010030")
+    print(test())
 
     fenetre.mainloop()
 
 if __name__ == "__main__":
     main()
+
+
