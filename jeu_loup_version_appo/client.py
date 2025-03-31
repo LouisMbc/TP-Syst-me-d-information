@@ -1,66 +1,13 @@
-# import tkinter as tk
-# from tkinter import *
-# import socket
-# import socketserver
-# from threading import Thread
-
-
-# class Client:
-#     def __init__(self, client_host_ip, client_host_port):
-#         self.__host, self.__port = "localhost", 9999
-#         self.__client_host_ip = client_host_ip
-#         self.__client_host_port = client_host_port
-#         self.actions = {
-#             'party_status': self.party_status,
-#             'gameboard_status': self.gameboard_status,
-#             'move': self.move,
-#             'list': self.list,
-#             'subscribe': self.subscribe,
-#         }
-
-#     def __send(self, message):
-#         received = None
-#         message_to_send = f'{self.__client_host_ip},{self.__client_host_port},{message}'
-#         # Create a socket (SOCK_STREAM means a TCP socket)
-#         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-#             # Connect to server and send data
-#             sock.connect((self.__host, self.__port))
-#             sock.sendall(bytes(message_to_send, "utf-8"))
-#             sock.sendall(b"\n")
-#             # Receive data from the server and shut down
-#             received = str(sock.recv(1024), "utf-8")
-#         return received
-    
-
-
-# class HandlerNotification(socketserver.BaseRequestHandler):
-
-#     def handle(self):
-#         print('trigger notification')
-
-# def wait_for_notification(client_port):
-#     HOST, PORT = "localhost", client_port
-
-#     # Create the server, binding to localhost on port 9999
-#     with socketserver.TCPServer((HOST, PORT), HandlerNotification) as server:
-#         # Activate the server; this will keep running until you
-#         # interrupt the program with Ctrl-C
-#         server.serve_forever()
-
-# if __name__ == "__main__":
-#     client_port = int(input('client port: '))
-#     thread_notification = Thread(target=wait_for_notification, args=[client_port])
-#     thread_notification.start()
-#     client = Client('localhost', client_port)
-#     client.run()
-#     # useless for now
-#     thread_notification.join()
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import *
 import socket
 import socketserver
 from threading import Thread
 import json
+from random import randint
+from Class_plateau import Plateau
+from Class_joueur import Joueur
+
 
 class Client:
     def __init__(self, client_host_ip, client_host_port):
@@ -76,21 +23,89 @@ class Client:
         }
         self.root = tk.Tk()
         self.root.title("Client de Jeu")
-        self.create_widgets()
+        self.plateau = Plateau(5, 5, 3)
+        self.joueur1 = Joueur(1, "loup", 0, 0, "OK", 0)
+        self.joueur2 = Joueur(2, "villageois", 1, 1, "OK", 0)
+        self.joueurs = [self.joueur1, self.joueur2]
+        self.canva = tk.Canvas(self.root, width=self.plateau.get_nb_colonnes() * 40, height=self.plateau.get_nb_lignes() * 40+250)
+        self.canva.pack() 
+        self.draw_plateau(self.canva, self.plateau, [self.joueur1, self.joueur2])
 
-    def create_widgets(self):
-        # Créer une interface simple pour interagir avec le client
-        self.status_label = tk.Label(self.root, text="Statut du jeu:")
-        self.status_label.pack()
 
-        self.action_label = tk.Label(self.root, text="Action:")
-        self.action_label.pack()
+    def draw_plateau(self, canvas, plateau, joueurs):
+        cell_size = 40
+        for i in range(plateau.get_nb_lignes()):
+            for j in range(plateau.get_nb_colonnes()):
+                x0, y0 = j * cell_size, i * cell_size
+                x1, y1 = x0 + cell_size, y0 + cell_size
+                if (j, i) in plateau.get_pos_obstacles():
+                    canvas.create_rectangle(x0, y0, x1, y1, fill="red", tags="shape")
+                else:
+                    joueur_present = False
+                    for joueur in joueurs:
+                        if joueur.get_co_x() == j and joueur.get_co_y() == i:
+                            joueur_present = True
+                            if joueur.get_role() == "loup":
+                                canvas.create_rectangle(x0, y0, x1, y1, fill="black", tags="shape")
+                            elif joueur.get_role() == "villageois":
+                                canvas.create_rectangle(x0, y0, x1, y1, fill="blue", tags="shape")
+                            break
+                    if not joueur_present:
+                        canvas.create_rectangle(x0, y0, x1, y1, fill="", outline="black", tags="shape")
 
-        self.action_entry = tk.Entry(self.root)
-        self.action_entry.pack()
 
-        self.send_button = tk.Button(self.root, text="Envoyer", command=self.send_action)
-        self.send_button.pack()
+    def draw_bomb(self, canvas, x0, y0, x1, y1):
+        center_x = (x0 + x1) / 2
+        center_y = (y0 + y1) / 2
+        radius = (x1 - x0) / 4
+        canvas.create_oval(center_x - radius, center_y - radius, center_x + radius, center_y + radius, fill="black")
+        canvas.create_line(center_x, y0 + 10, center_x, y0 + 5, fill="red", width=2)
+
+    def draw_smiley(self, canvas, x0, y0, x1, y1):
+        canvas.create_oval(x0, y0, x1, y1, fill="yellow", outline="black")
+        eye_size = (x1 - x0) / 8
+        eye_x_offset = (x1 - x0) / 4
+        eye_y_offset = (y1 - y0) / 4
+        canvas.create_oval(x0 + eye_x_offset, y0 + eye_y_offset, x0 + eye_x_offset + eye_size, y0 + eye_y_offset + eye_size, fill="black")
+        canvas.create_oval(x1 - eye_x_offset - eye_size, y0 + eye_y_offset, x1 - eye_x_offset, y0 + eye_y_offset + eye_size, fill="black")
+        canvas.create_arc(x0 + eye_x_offset, y1 - eye_y_offset - eye_size, x1 - eye_x_offset, y1 - eye_y_offset, start=0, extent=-180, style=ARC, outline="black", width=2)
+
+    def check_victoire(self,joueurs):
+        villageois = []
+        loups = []
+        for joueur in joueurs:
+            if joueur.get_role() == "villageois":
+                villageois.append(joueur)
+            elif joueur.get_role() == "loup":
+                loups.append(joueur)
+        for loup in loups:
+            for villageoi in villageois:
+                if loup.get_co_x() == villageoi.get_co_x() and loup.get_co_y() == villageoi.get_co_y():
+                    villageoi.set_etat("KO")
+                    print("villageois KO")
+                    joueurs.remove(villageoi)
+
+        def nouveau_jeu(self, taille_x, taille_y, nb_obstacle, nb_joueurs, nb_loup):
+            print()
+            print("----nouveau jeu----")
+            plateau = Plateau(taille_x, taille_y, nb_obstacle)
+            print(plateau)
+            joueurs = []
+            for i in range(nb_joueurs):
+                x = 0
+                y = 0
+                while((x,y) in plateau.get_pos_obstacles()):
+                        x = randint(0, taille_x - 1)
+                        y = randint(0, taille_y - 1)
+                if i <= nb_loup-1:
+                    joueurs.append(Joueur(i, "loup", x, y, "OK", 0))
+                else:
+                    joueurs.append(Joueur(i, "villageois", x, y, "OK", 0))
+                print()
+                print("---------------")
+                print(joueurs([i]))
+        
+            return plateau, joueurs
 
     def send_action(self):
         action = self.action_entry.get()
@@ -135,22 +150,8 @@ class Client:
 
     def run(self):
         self.root.mainloop()
-
-class HandlerNotification(socketserver.BaseRequestHandler):
-    def handle(self):
-        print('Notification reçue')
-        data = self.request.recv(1024).strip()
-        print(f"Notification: {data.decode('utf-8')}")
-
-def wait_for_notification(client_port):
-    HOST, PORT = "localhost", client_port
-    with socketserver.TCPServer((HOST, PORT), HandlerNotification) as server:
-        server.serve_forever()
-
+    
 if __name__ == "__main__":
     client_port = int(input('client port: '))
-    thread_notification = Thread(target=wait_for_notification, args=[client_port])
-    thread_notification.start()
     client = Client('localhost', client_port)
     client.run()
-    thread_notification.join()
