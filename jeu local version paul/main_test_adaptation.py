@@ -49,33 +49,20 @@ def get_vision():
 
 def draw_vision_joueur(canvas, vision):
     cell_size = 40
-    for i in range(2): 
-        for j in range(2):
-            x0, y0 = j * cell_size, i * cell_size
-            x1, y1 = x0 + cell_size, y0 + cell_size
-            if vision[i+j] == 1:
-                pass
-
-
-
-
-
-            if (j, i) in plateau.get_pos_obstacles():
-                canvas.create_rectangle(x0, y0, x1, y1, fill="red", tags="shape")
-            else:
-                joueur_present = False
-                for joueur in joueurs:
-                    if joueur.get_co_x() == j and joueur.get_co_y() == i:
-                        joueur_present = True
-                        if joueur.get_role() == "loup":
-                            canvas.create_rectangle(x0, y0, x1, y1, fill="black", tags="shape")
-                        elif joueur.get_role() == "villageois":
-                            canvas.create_rectangle(x0, y0, x1, y1, fill="blue", tags="shape")
-                        break
-                if not joueur_present:
-                    canvas.create_rectangle(x0, y0, x1, y1, fill="white", outline="black", tags="shape")
-
-
+    j = 0
+    for i in range(len(vision)): 
+        if i % 3 == 0 and i != 0:
+            j+=1
+        y0, x0 = j * cell_size, (i-j*3) * cell_size
+        x1, y1 = x0 + cell_size, y0 + cell_size
+        if vision[i] == "0":
+            canvas.create_rectangle(x0, y0, x1, y1, fill="white", outline="black", tags="shape")
+        elif vision[i] == "1":
+            canvas.create_rectangle(x0, y0, x1, y1, fill="blue", tags="shape")
+        elif vision[i] == "2":
+            canvas.create_rectangle(x0, y0, x1, y1, fill="black", tags="shape")
+        else:
+            canvas.create_rectangle(x0, y0, x1, y1, fill="red", tags="shape")
 
 
 
@@ -232,7 +219,8 @@ def main() :
     button_gauche.place(x=-160+plateau.get_nb_colonnes() * 20, y=plateau.get_nb_lignes() * 40+50, width=160, height=50)
 
 
-    draw_plateau(canvas, plateau, joueurs)
+    #draw_plateau(canvas, plateau, joueurs)
+    draw_vision_joueur(canvas, "020010030")
 
     fenetre.mainloop()
 
