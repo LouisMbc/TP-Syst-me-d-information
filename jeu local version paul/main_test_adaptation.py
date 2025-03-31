@@ -36,6 +36,97 @@ def draw_plateau(canvas, plateau, joueurs):
 
 
 
+
+
+
+
+
+
+def get_vision():
+    pass
+
+
+
+def draw_vision_joueur(canvas, vision):
+    cell_size = 40
+    for i in range(2): 
+        for j in range(2):
+            x0, y0 = j * cell_size, i * cell_size
+            x1, y1 = x0 + cell_size, y0 + cell_size
+            if vision[i+j] == 1:
+                pass
+
+
+
+
+
+            if (j, i) in plateau.get_pos_obstacles():
+                canvas.create_rectangle(x0, y0, x1, y1, fill="red", tags="shape")
+            else:
+                joueur_present = False
+                for joueur in joueurs:
+                    if joueur.get_co_x() == j and joueur.get_co_y() == i:
+                        joueur_present = True
+                        if joueur.get_role() == "loup":
+                            canvas.create_rectangle(x0, y0, x1, y1, fill="black", tags="shape")
+                        elif joueur.get_role() == "villageois":
+                            canvas.create_rectangle(x0, y0, x1, y1, fill="blue", tags="shape")
+                        break
+                if not joueur_present:
+                    canvas.create_rectangle(x0, y0, x1, y1, fill="white", outline="black", tags="shape")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def move_joueur(joueurs, id_player, move):
+    if move =="10" :
+        for joueur in joueurs:
+            if joueur.get_id() == id_player:
+                joueur.set_co_x(joueur.get_co_x() + 1)
+                print("droite")
+    if move =="-10" :
+        for joueur in joueurs:
+            if joueur.get_id() == id_player:
+                joueur.set_co_x(joueur.get_co_x() - 1)
+                print("gauche")
+    if move =="01" :
+        for joueur in joueurs:
+            if joueur.get_id() == id_player:
+                joueur.set_co_y(joueur.get_co_y() + 1)
+                print("bas")
+    if move =="0-1" :
+        for joueur in joueurs:
+            if joueur.get_id() == id_player:
+                joueur.set_co_y(joueur.get_co_y() - 1)
+                print("haut")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def joueur_haut(canvas, plateau, joueurs):
     for villageoi in joueurs:
         if villageoi.get_role() == "villageois":
@@ -112,8 +203,9 @@ def nouveau_jeu(taille_x, taille_y, nb_obstacle, nb_joueurs, nb_loup):
             joueurs.append(Joueur(i, "villageois", x, y, "OK", 0))
         print()
         print("---------------")
-        # joueurs[i].info_joueur()
+        joueurs[i].info_joueur()
     
+
     return plateau, joueurs
 
 

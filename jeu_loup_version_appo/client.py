@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import *
 import socket
 import socketserver
-from threading import Thread
 import json
 from random import randint
 from Class_plateau import Plateau
