@@ -5,8 +5,12 @@ from random import randint
 from Class_joueur import Joueur
 from Class_plateau import Plateau
 
-
-
+"""Version Local :
+    possibilité de choisir le nombre de joueur et le nombre de loup
+    possibilité de choisir le nombre d'obstacle
+    possibilité de choisir la taille du plateau
+    On jou un joueur a la fois et quand il est ko il disparait et on prend le cotrole du joueur suivant
+    On peut se déplacer sur le plateau"""
 
 def draw_plateau(canvas, plateau, joueurs):
     cell_size = 40

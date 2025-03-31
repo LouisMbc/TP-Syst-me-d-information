@@ -7,48 +7,49 @@ from Class_plateau import Plateau
 from flask import Flask, request, g
 import psycopg2
 
-def get_db():
-    if 'db' not in g:
-        g.db = psycopg2.connect(
-            dbname="jeu_loup",
-            user="postgres",
-            password="mysecretpassword",
-            host="10.1.4.227",
-            port="5434"
-        )
-    return g.db
-
-def get_pos_joueur(id_joueur):
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute(f"SELECT origin_position_col, origin_position_row FROM players_play wHERE id_player = {id_joueur}")
-    result = cursor.fetchone()
-    if result is None:
-        print("Aucun joueur trouvé avec cet ID.")
-        return None
-    print(f"Position du joueur {id_joueur} : {result}")
-    conn.commit()
-    cursor.close()
-    return result
-
-def test():
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM players_play")
-    result = cursor.fetchall()
-    if result is None:
-        print("Aucun joueur trouvé.")
-        return None
-    conn.commit()
-    cursor.close()
-    return result
+"""
+test des différentes fonction pour l'implémentation du coté serveur/client 
+comme la fonction build_vision ou draw_vision_joueur"""
 
 
-def close_db(e=None):
-    db = g.pop('db', None)
+# def get_db():
+#     if 'db' not in g:
+#         g.db = psycopg2.connect(
+#             dbname="jeu_loup",
+#             user="postgres",
+#             password="mysecretpassword",
+#             host="10.1.4.227",
+#             port="5434"
+#         )
+#     return g.db
 
-    if db is not None:
-        db.close()
+# def get_pos_joueur(id_joueur):
+#     conn = get_db()
+#     cursor = conn.cursor()
+#     cursor.execute(f"SELECT origin_position_col, origin_position_row FROM players_play wHERE id_player = {id_joueur}")
+#     result = cursor.fetchone()
+#     if result is None:
+#         print("Aucun joueur trouvé avec cet ID.")
+#         return None
+#     print(f"Position du joueur {id_joueur} : {result}")
+#     conn.commit()
+#     cursor.close()
+#     return result
+
+# def test():
+#     conn = get_db()
+#     cursor = conn.cursor()
+#     cursor.execute("SELECT * FROM players_play")
+#     result = cursor.fetchall()
+#     cursor.close()
+#     return result
+
+
+# def close_db(e=None):
+#     db = g.pop('db', None)
+
+#     if db is not None:
+#         db.close()
 
 
 def build_vision(id_joueur):
